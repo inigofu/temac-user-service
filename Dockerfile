@@ -1,6 +1,6 @@
 FROM golang:1.11.4 as builder
 
-WORKDIR /go/src/github.com/inigofu/shippy-user-service
+WORKDIR /go/src/github.com/inigofu/temac-user-service
 
 COPY . .
 
@@ -14,6 +14,6 @@ RUN apk --no-cache add ca-certificates
 
 RUN mkdir /app
 WORKDIR /app
-COPY --from=builder /go/src/github.com/inigofu/shippy-user-service .
+COPY --from=builder /go/src/github.com/inigofu/temac-user-service .
 
-CMD ["./shippy-user-service"]
+CMD ["./temac-user-service"]

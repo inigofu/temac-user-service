@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"log"
 
-	pb "github.com/inigofu/shippy-user-service/proto/auth"
+	pb "github.com/inigofu/temac-user-service/proto/auth"
 	"github.com/micro/go-micro/metadata"
 	"golang.org/x/crypto/bcrypt"
 	"golang.org/x/net/context"

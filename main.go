@@ -5,7 +5,7 @@ import (
 	"os"
 	"strconv"
 
-	pb "github.com/inigofu/shippy-user-service/proto/auth"
+	pb "github.com/inigofu/temac-user-service/proto/auth"
 	"github.com/micro/go-micro"
 	_ "github.com/micro/go-plugins/registry/mdns"
 )
@@ -53,7 +53,7 @@ func main() {
 	srv = micro.NewService(
 
 		// This name must match the package name given in your protobuf definition
-		micro.Name("shippy.auth"),
+		micro.Name("temac.auth"),
 	)
 
 	// Init will parse the command line flags.
