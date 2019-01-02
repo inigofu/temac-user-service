@@ -1,0 +1,250 @@
+syntax = "proto3";
+
+package auth;
+
+service Auth {
+    rpc Create(User) returns (ResponseUser) {}
+    rpc Get(User) returns (ResponseUser) {}
+    rpc GetAll(Request) returns (ResponseUser) {}
+    rpc GetAllUsersRole(Request) returns (ResponseUser) {}
+    rpc Auth(User) returns (ResponseToken) {}
+    rpc UpdateUser(User) returns (ResponseUser) {}
+    rpc DeleteUser(User) returns (ResponseUser) {}
+    rpc GetUserMenus(User) returns (ResponseMenu) {}
+    rpc GetUserRules(User) returns (ResponseRule) {}
+    rpc Login(User) returns (ResponseUser) {}
+    rpc ValidateToken(Token) returns (ResponseToken) {}
+    rpc UserToken(Token) returns (ResponseUser) {}
+    rpc CreateRole(Role) returns (ResponseRole) {}
+    rpc updateRole(Role) returns (ResponseRole) {}
+    rpc GetRole(Role) returns (ResponseRole) {}
+    rpc GetAllRoles(Request) returns (ResponseRole) {}
+    rpc deleteRole(Role) returns (ResponseRole) {}
+    rpc CreateMenu(Menu) returns (ResponseMenu) {}
+    rpc UpdateMenu(Menu) returns (ResponseMenu) {}
+    rpc GetMenu(Menu) returns (ResponseMenu) {}
+    rpc GetAllMenues(Request) returns (ResponseMenu) {}
+    rpc CreateForm(Form) returns (ResponseForm) {}
+    rpc GetForm(Form) returns (ResponseForm) {}
+    rpc UpdateForm(Form) returns (ResponseForm) {}
+    rpc DeleteForm(Form) returns (ResponseForm) {}
+    rpc GetAllForms(Request) returns (ResponseForm) {}
+    rpc DeleteFields(Form) returns (Error) {}
+    rpc DeleteTabs(Form) returns (Error) {}
+    rpc CreateSchema(FormSchema) returns (ResponseFormSchema) {}
+    rpc GetSchema(FormSchema) returns (ResponseFormSchema) {}
+    rpc UpdateSchema(FormSchema) returns (ResponseFormSchema) {}
+    rpc DeleteSchema(FormSchema) returns (Error) {}
+    rpc GetAllSchemas(Request) returns (ResponseFormSchema) {}
+}
+
+message User {
+    string id = 1;
+    string name = 2;
+    string company = 3;
+    // @inject_tag: gorm:"unique;not null"
+    string email = 4;
+    string password = 5;
+    string token = 6;
+    // @inject_tag: gorm:"many2many:user_roles;foreignkey:id;association_foreignkey:id;association_jointable_foreignkey:role_id;jointable_foreignkey:user_id;"
+    repeated Role roles=7;
+    bool designer = 8;
+}
+
+message Request {}
+
+message ResponseUser {
+    User user = 1;
+    repeated User users = 2;
+    repeated Error errors = 3;
+    Token token = 4;
+    repeated Menu menues = 5;
+    repeated Rules rules = 6;
+}
+message ResponseRole {
+    Role role = 1;
+    repeated Role roles = 2;
+    repeated Error errors = 3;
+}
+message ResponseMenu {
+    Menu menu = 1;
+    repeated Menu menues = 2;
+    repeated Error errors = 3;
+}
+message ResponseRule {
+    Rules rule = 1;
+    repeated Rules rules = 2;
+    repeated Error errors = 3;
+}
+message ResponseForm {
+    Form form = 1;
+    repeated Form forms = 2;
+    repeated Error errors = 3;
+}
+message ResponseFormSchema {
+    FormSchema formschema = 1;
+    repeated FormSchema formschemas = 2;
+    repeated Error errors = 3;
+}
+message ResponseToken {
+    Token token = 1;
+    User user = 2;
+    repeated Error errors = 3;
+}
+message Token {
+    string token = 1;
+    bool valid = 2;
+    repeated Error errors = 3;
+}
+
+message Error {
+    int32 code = 1;
+    string description = 2;
+}
+message Role {
+    string id = 1;
+    string name = 2;
+    repeated User users=3;
+    // @inject_tag: gorm:"many2many:role_menus;foreignkey:id;association_foreignkey:id;association_jointable_foreignkey:menu_id;jointable_foreignkey:role_id;"
+    repeated Menu menues=4;
+    // @inject_tag: `gorm:"foreignkey:rolesrefer"`
+    repeated Rules rules = 5;
+}
+message Rules {
+    string id = 1;
+    string actions = 2;
+    string subject = 3; 
+    repeated string fields = 4;
+    Conditions conditions = 5;
+    string rolesrefer = 6;
+}
+message Conditions {
+    string id = 1;
+    repeated string conditions = 2;
+}
+message Menu {
+    string id = 1;
+    string name = 2;
+    string url = 3;
+    Badge badge = 4;
+    Wrapper wrapper =5;
+    bool title = 6;
+    // @inject_tag: gorm:"many2many:menu_childrens;foreignkey:id;association_foreignkey:id;association_jointable_foreignkey:children_id;jointable_foreignkey:parent_id;"
+    repeated Menu children = 7;
+    string icon = 8;
+    repeated Role roles =9;
+    string badgeID = 10;
+    string wrapperID =11;
+}
+message Badge {
+    string id = 1;
+    string variant = 2;
+    string text = 3;
+}
+
+message Wrapper {
+    string id = 1;
+    string element = 2;
+    Atributes atributes = 3;
+    string atributesID = 4;
+}
+
+message Atributes {
+    string id =1;
+}
+
+message Form {
+    string id=1;
+    string name=2;
+     // @inject_tag: `gorm:"DEFAULT:false"`
+    bool multiline=5;
+    // @inject_tag: `gorm:"foreignkey:FormRefer"`
+    repeated FormSchema fields=3;
+    // @inject_tag: gorm:"many2many:form_childrens;foreignkey:id;association_foreignkey:id;association_jointable_foreignkey:children_id;jointable_foreignkey:parent_id;"
+    repeated Form tabs =4;
+}
+message FormSchema {
+// @inject_tag: `gorm:""default:'none'""`//Type of field
+string type = 1;
+// @inject_tag: `gorm:""default:'none'""`//Label of field
+string label = 2;
+// @inject_tag: `gorm:""default:'none'""`//Name of property in the model
+string model =3;
+// @inject_tag: `gorm:""default:'auto-generated'""`//id of the field. If not set, will be auto-generated from the slugified version of either: schema.inputName, schema.label or schema.model, in that order. If the fieldIdPrefix option is set, it's value will be prepended to both manual & auto-generated ids.
+string id = 4;
+// @inject_tag: `gorm:""default:'false'""`//is it a featured (bold) field? It can be a function too.
+bool featured = 5;
+// @inject_tag: `gorm:""default:'true'""`//if false, field will be hidden. It can be a function too.
+bool visible = 6;
+// @inject_tag: `gorm:""default:'false'""`//if true, field will be disabled. It can be a function too.
+bool disabled = 7;
+// @inject_tag: `gorm:""default:'false'""`//if true, must be fill this field (need to use validator).
+bool required = 8;
+// @inject_tag: `gorm:""default:'false'""`//if true, it will visible only if multiple is true in component attributes
+bool multi = 9;
+// @inject_tag: `gorm:""default:'none'""`//Default value of the field (use when create a new model)
+string default = 10;
+// @inject_tag: `gorm:""default:'none'""`//show this hint below the field
+string hint = 11;
+// @inject_tag: `gorm:""default:'none'""`//set name attribute to input field. You can use it to generate normal HTML Forms and submit the field values to server-side. Example
+string inputName = 12;
+// @inject_tag: `gorm:""default:'none'""`//show this help if mouse hover the question icon before the caption of field. You can use HTML elements too.
+string help = 13;
+// @inject_tag: `gorm:"many2many:schema_validator;foreignkey:id;association_foreignkey:id;association_jointable_foreignkey:validator_id;jointable_foreignkey:schema_id;"default:'none'""`//Validator for value. It can be an array of functions too.
+string validator = 14;
+// @inject_tag: `gorm:"many2many:schema_classes;foreignkey:id;association_foreignkey:id;association_jointable_foreignkey:class_id;jointable_foreignkey:schema_id;"default:'none'""`//custom css style classes. It will be appended to the .from-group
+repeated Class styleClasses = 15;
+// @inject_tag: `gorm:"many2many:schema_buttons;foreignkey:id;association_foreignkey:id;association_jointable_foreignkey:button_id;jointable_foreignkey:schema_id;"default:'none'""`//Array of button objects. This is useful if you need some helper function to fill the field. (E.g. generate password, get GPS location..etc)*
+repeated Buttons buttons = 16;
+string FormRefer = 17;
+string onChanged = 18;
+string onValidated = 19;
+string get =20;
+string set = 21;
+string inputType = 22;
+int32 width = 23;
+int32 offset = 24;
+int32 xs = 25;
+int32 sm = 26;
+int32 md = 27;
+int32 lg = 28;
+int32 xs_offset = 29;
+int32 sm_offset = 30;
+int32 md_offset = 31;
+int32 lg_offset = 32;
+int32 order = 33;
+// @inject_tag: `gorm:"foreignkey:SchemaRefer"`
+SelectOptions selectoptions = 34;
+// @inject_tag: `gorm:"foreignkey:SchemaRefer"`
+repeated Values values = 45;
+repeated Rules rules = 46;
+}
+message Buttons {
+    string id =1;
+    string classes = 2;
+    string label = 3;
+    string onclick = 4;
+}
+message Class {
+    string class = 2;
+}
+
+message SelectOptions {
+    string id = 1;
+    bool multiple = 3;
+    bool searchable = 4;
+    bool clearOnSelect = 5;
+    bool hideSelected = 6;
+    bool taggable = 7;
+    string tagPlaceholder = 2;
+    string onNewTag = 8;
+    string onSearch = 9;
+    string SchemaRefer =10;
+    string value = 11;
+}
+message Values {
+    string id = 1;
+    string value = 2;
+    string SchemaRefer = 3;
+}
+      
