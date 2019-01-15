@@ -39,14 +39,15 @@ service Auth {
 }
 
 message User {
-    string id = 1;
+    // @inject_tag: gorm:"primary_key"
+    string idcode = 1;
     string name = 2;
     string company = 3;
     // @inject_tag: gorm:"unique;not null"
     string email = 4;
     string password = 5;
     string token = 6;
-    // @inject_tag: gorm:"many2many:user_roles;foreignkey:id;association_foreignkey:id;association_jointable_foreignkey:role_id;jointable_foreignkey:user_id;"
+    // @inject_tag: gorm:"many2many:user_roles;foreignkey:idcode;association_foreignkey:idcode;association_jointable_foreignkey:role_idcode;jointable_foreignkey:user_idcode;"
     repeated Role roles=7;
     bool designer = 8;
 }
@@ -98,38 +99,45 @@ message Token {
 }
 
 message Error {
-    int32 code = 1;
+    // @inject_tag: gorm:"primary_key"
+    int32 idcode = 1;
     string description = 2;
 }
 message Role {
-    string id = 1;
+    // @inject_tag: gorm:"primary_key"
+    string idcode = 1;
+    // @inject_tag: gorm:"unique;not null"
     string name = 2;
     repeated User users=3;
-    // @inject_tag: gorm:"many2many:role_menus;foreignkey:id;association_foreignkey:id;association_jointable_foreignkey:menu_id;jointable_foreignkey:role_id;"
+    // @inject_tag: gorm:"many2many:role_menus;foreignkey:idcode;association_foreignkey:idcode;association_jointable_foreignkey:menu_idcode;jointable_foreignkey:role_idcode;"
     repeated Menu menues=4;
     // @inject_tag: `gorm:"foreignkey:rolesrefer"`
     repeated Rules rules = 5;
 }
 message Rules {
-    string id = 1;
+    // @inject_tag: gorm:"primary_key"
+    string idcode = 1;
     string actions = 2;
     string subject = 3; 
-    repeated string fields = 4;
+    string fields = 4;
     Conditions conditions = 5;
     string rolesrefer = 6;
 }
 message Conditions {
-    string id = 1;
+    // @inject_tag: gorm:"primary_key"
+    string idcode = 1;
     repeated string conditions = 2;
 }
 message Menu {
-    string id = 1;
+    // @inject_tag: gorm:"primary_key"
+    string idcode = 1;
+    // @inject_tag: gorm:"unique;not null"
     string name = 2;
     string url = 3;
     Badge badge = 4;
     Wrapper wrapper =5;
     bool title = 6;
-    // @inject_tag: gorm:"many2many:menu_childrens;foreignkey:id;association_foreignkey:id;association_jointable_foreignkey:children_id;jointable_foreignkey:parent_id;"
+    // @inject_tag: gorm:"many2many:menu_childrens;foreignkey:idcode;association_foreignkey:idcode;association_jointable_foreignkey:children_idcode;jointable_foreignkey:parent_idcode;"
     repeated Menu children = 7;
     string icon = 8;
     repeated Role roles =9;
@@ -137,30 +145,34 @@ message Menu {
     string wrapperID =11;
 }
 message Badge {
-    string id = 1;
+    // @inject_tag: gorm:"primary_key"
+    string idcode = 1;
     string variant = 2;
     string text = 3;
 }
 
 message Wrapper {
-    string id = 1;
+    // @inject_tag: gorm:"primary_key"
+    string idcode = 1;
     string element = 2;
     Atributes atributes = 3;
     string atributesID = 4;
 }
 
 message Atributes {
-    string id =1;
+    // @inject_tag: gorm:"primary_key"
+    string idcode =1;
 }
 
 message Form {
-    string id=1;
+    // @inject_tag: gorm:"primary_key"
+    string idcode=1;
     string name=2;
      // @inject_tag: `gorm:"DEFAULT:false"`
     bool multiline=5;
     // @inject_tag: `gorm:"foreignkey:FormRefer"`
     repeated FormSchema fields=3;
-    // @inject_tag: gorm:"many2many:form_childrens;foreignkey:id;association_foreignkey:id;association_jointable_foreignkey:children_id;jointable_foreignkey:parent_id;"
+    // @inject_tag: gorm:"many2many:form_childrens;foreignkey:idcode;association_foreignkey:idcode;association_jointable_foreignkey:children_idcode;jointable_foreignkey:parent_idcode;"
     repeated Form tabs =4;
 }
 message FormSchema {
@@ -170,8 +182,8 @@ string type = 1;
 string label = 2;
 // @inject_tag: `gorm:""default:'none'""`//Name of property in the model
 string model =3;
-// @inject_tag: `gorm:""default:'auto-generated'""`//id of the field. If not set, will be auto-generated from the slugified version of either: schema.inputName, schema.label or schema.model, in that order. If the fieldIdPrefix option is set, it's value will be prepended to both manual & auto-generated ids.
-string id = 4;
+// @inject_tag: `gorm:""default:'auto-generated'""`//idcode of the field. If not set, will be auto-generated from the slugified version of either: schema.inputName, schema.label or schema.model, in that order. If the fieldIdPrefix option is set, it's value will be prepended to both manual & auto-generated ids.
+string idcode = 4;
 // @inject_tag: `gorm:""default:'false'""`//is it a featured (bold) field? It can be a function too.
 bool featured = 5;
 // @inject_tag: `gorm:""default:'true'""`//if false, field will be hidden. It can be a function too.
@@ -190,11 +202,11 @@ string hint = 11;
 string inputName = 12;
 // @inject_tag: `gorm:""default:'none'""`//show this help if mouse hover the question icon before the caption of field. You can use HTML elements too.
 string help = 13;
-// @inject_tag: `gorm:"many2many:schema_validator;foreignkey:id;association_foreignkey:id;association_jointable_foreignkey:validator_id;jointable_foreignkey:schema_id;"default:'none'""`//Validator for value. It can be an array of functions too.
+// @inject_tag: `gorm:"many2many:schema_validator;foreignkey:idcode;association_foreignkey:idcode;association_jointable_foreignkey:validator_idcode;jointable_foreignkey:schema_idcode;"default:'none'""`//Validator for value. It can be an array of functions too.
 string validator = 14;
-// @inject_tag: `gorm:"many2many:schema_classes;foreignkey:id;association_foreignkey:id;association_jointable_foreignkey:class_id;jointable_foreignkey:schema_id;"default:'none'""`//custom css style classes. It will be appended to the .from-group
+// @inject_tag: `gorm:"many2many:schema_classes;foreignkey:idcode;association_foreignkey:idcode;association_jointable_foreignkey:class_idcode;jointable_foreignkey:schema_idcode;"default:'none'""`//custom css style classes. It will be appended to the .from-group
 repeated Class styleClasses = 15;
-// @inject_tag: `gorm:"many2many:schema_buttons;foreignkey:id;association_foreignkey:id;association_jointable_foreignkey:button_id;jointable_foreignkey:schema_id;"default:'none'""`//Array of button objects. This is useful if you need some helper function to fill the field. (E.g. generate password, get GPS location..etc)*
+// @inject_tag: `gorm:"many2many:schema_buttons;foreignkey:idcode;association_foreignkey:idcode;association_jointable_foreignkey:button_idcode;jointable_foreignkey:schema_idcode;"default:'none'""`//Array of button objects. This is useful if you need some helper function to fill the field. (E.g. generate password, get GPS location..etc)*
 repeated Buttons buttons = 16;
 string FormRefer = 17;
 string onChanged = 18;
@@ -213,14 +225,15 @@ int32 sm_offset = 30;
 int32 md_offset = 31;
 int32 lg_offset = 32;
 int32 order = 33;
-// @inject_tag: `gorm:"foreignkey:SchemaRefer"`
+// @inject_tag: `gorm:"foreignkey:SchemaRefer;association_foreignkey:idcode"`
 SelectOptions selectoptions = 34;
-// @inject_tag: `gorm:"foreignkey:SchemaRefer"`
+// @inject_tag: `gorm:"foreignkey:SchemaRefer;association_foreignkey:idcode"`
 repeated Values values = 45;
 repeated Rules rules = 46;
 }
 message Buttons {
-    string id =1;
+    // @inject_tag: gorm:"primary_key"
+    string idcode =1;
     string classes = 2;
     string label = 3;
     string onclick = 4;
@@ -230,7 +243,8 @@ message Class {
 }
 
 message SelectOptions {
-    string id = 1;
+    // @inject_tag: gorm:"primary_key"
+    string idcode = 1;
     bool multiple = 3;
     bool searchable = 4;
     bool clearOnSelect = 5;
@@ -243,7 +257,8 @@ message SelectOptions {
     string value = 11;
 }
 message Values {
-    string id = 1;
+    // @inject_tag: gorm:"primary_key"
+    string idcode = 1;
     string value = 2;
     string SchemaRefer = 3;
 }

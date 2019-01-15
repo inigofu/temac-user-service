@@ -14,10 +14,10 @@ spec:
     spec:
         containers:
         - name: user-service
-          image: eu.gcr.io/shippy-freight/user:latest
+          image: eu.gcr.io/temac-freight/user:latest
           imagePullPolicy: Always
           command: [
-            "./shippy-user-service",
+            "./temac-user-service",
             "--selector=static",
             "--server_address=:8080"
           ]

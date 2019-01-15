@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
-	pb "github.com/inigofu/shippy-user-service/proto/auth"
+	pb "github.com/inigofu/temac-user-service/proto/auth"
 )
 
 var (
@@ -66,7 +66,7 @@ func (srv *TokenService) Encode(user *pb.User) (string, error) {
 		user,
 		jwt.StandardClaims{
 			ExpiresAt: expireToken,
-			Issuer:    "shippy.user",
+			Issuer:    "temac.user",
 		},
 	}
 

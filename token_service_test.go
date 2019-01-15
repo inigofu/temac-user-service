@@ -4,12 +4,12 @@ import (
 	"strings"
 	"testing"
 
-	pb "github.com/inigofu/shippy-user-service/proto/auth"
+	pb "github.com/inigofu/temac-user-service/proto/auth"
 )
 
 var (
 	user = &pb.User{
-		Id:    "abc123",
+		Idcode:    "abc123",
 		Email: "ewan.valentine89@gmail.com",
 	}
 )
@@ -21,7 +21,7 @@ func (repo *MockRepo) GetAll() ([]*pb.User, error) {
 	return users, nil
 }
 
-func (repo *MockRepo) Get(id string) (*pb.User, error) {
+func (repo *MockRepo) Get(idcode string) (*pb.User, error) {
 	var user *pb.User
 	return user, nil
 }

@@ -1,11 +1,11 @@
 package main
 
 import (
-	"errors"
 	"fmt"
 	"log"
 
-	pb "github.com/inigofu/shippy-user-service/proto/auth"
+	pb "github.com/inigofu/temac-user-service/proto/auth"
+	"github.com/micro/go-micro/errors"
 	"github.com/micro/go-micro/metadata"
 	"golang.org/x/crypto/bcrypt"
 	"golang.org/x/net/context"
@@ -21,15 +21,15 @@ type service struct {
 func (srv *service) Get(ctx context.Context, req *pb.User, res *pb.ResponseUser) error {
 	meta, ok := metadata.FromContext(ctx)
 	if !ok {
-		return errors.New("no auth meta-data found in request")
+		return errors.BadRequest("go.micro.api.example", "no auth meta-data found in request")
 	}
 
 	// Note this is now uppercase (not entirely sure why this is...)
 	token := meta["Authorization"]
 	if token == "" {
-		return errors.New("no auth meta-data found in request")
+		return errors.BadRequest("go.micro.api.example", "no auth meta-data found in request")
 	}
-	log.Println("Authenticating with token: ", token)
+
 	tokin := &pb.Token{
 		Token: token,
 	}
@@ -38,7 +38,7 @@ func (srv *service) Get(ctx context.Context, req *pb.User, res *pb.ResponseUser)
 	if err != nil {
 		return err
 	}
-	user, err := srv.repo.Get(req.Id)
+	user, err := srv.repo.Get(req.Idcode)
 	if err != nil {
 		return err
 	}
@@ -49,15 +49,15 @@ func (srv *service) Get(ctx context.Context, req *pb.User, res *pb.ResponseUser)
 func (srv *service) GetUserRules(ctx context.Context, req *pb.User, res *pb.ResponseRule) error {
 	meta, ok := metadata.FromContext(ctx)
 	if !ok {
-		return errors.New("no auth meta-data found in request")
+		return errors.BadRequest("go.micro.api.example", "no auth meta-data found in request")
 	}
 
 	// Note this is now uppercase (not entirely sure why this is...)
 	token := meta["Authorization"]
 	if token == "" {
-		return errors.New("no auth meta-data found in request")
+		return errors.BadRequest("go.micro.api.example", "no auth meta-data found in request")
 	}
-	log.Println("Authenticating with token: ", token)
+
 	tokin := &pb.Token{
 		Token: token,
 	}
@@ -77,15 +77,15 @@ func (srv *service) GetUserRules(ctx context.Context, req *pb.User, res *pb.Resp
 func (srv *service) GetUserMenus(ctx context.Context, req *pb.User, res *pb.ResponseMenu) error {
 	meta, ok := metadata.FromContext(ctx)
 	if !ok {
-		return errors.New("no auth meta-data found in request")
+		return errors.BadRequest("go.micro.api.example", "no auth meta-data found in request")
 	}
 
 	// Note this is now uppercase (not entirely sure why this is...)
 	token := meta["Authorization"]
 	if token == "" {
-		return errors.New("no auth meta-data found in request")
+		return errors.BadRequest("go.micro.api.example", "no auth meta-data found in request")
 	}
-	log.Println("Authenticating with token: ", token)
+
 	tokin := &pb.Token{
 		Token: token,
 	}
@@ -105,15 +105,15 @@ func (srv *service) GetUserMenus(ctx context.Context, req *pb.User, res *pb.Resp
 func (srv *service) GetAll(ctx context.Context, req *pb.Request, res *pb.ResponseUser) error {
 	meta, ok := metadata.FromContext(ctx)
 	if !ok {
-		return errors.New("no auth meta-data found in request")
+		return errors.BadRequest("go.micro.api.example", "no auth meta-data found in request")
 	}
 
 	// Note this is now uppercase (not entirely sure why this is...)
 	token := meta["Authorization"]
 	if token == "" {
-		return errors.New("no auth meta-data found in request")
+		return errors.BadRequest("go.micro.api.example", "no auth meta-data found in request")
 	}
-	log.Println("Authenticating with token: ", token)
+
 	tokin := &pb.Token{
 		Token: token,
 	}
@@ -132,15 +132,15 @@ func (srv *service) GetAll(ctx context.Context, req *pb.Request, res *pb.Respons
 func (srv *service) GetAllUsersRole(ctx context.Context, req *pb.Request, res *pb.ResponseUser) error {
 	meta, ok := metadata.FromContext(ctx)
 	if !ok {
-		return errors.New("no auth meta-data found in request")
+		return errors.BadRequest("go.micro", "no auth meta-data found in request")
 	}
 
 	// Note this is now uppercase (not entirely sure why this is...)
 	token := meta["Authorization"]
 	if token == "" {
-		return errors.New("no auth meta-data found in request")
+		return errors.BadRequest("go.micro", "no auth meta-data found in request")
 	}
-	log.Println("Authenticating with token: ", token)
+
 	tokin := &pb.Token{
 		Token: token,
 	}
@@ -159,15 +159,15 @@ func (srv *service) GetAllUsersRole(ctx context.Context, req *pb.Request, res *p
 func (srv *service) UpdateUser(ctx context.Context, req *pb.User, res *pb.ResponseUser) error {
 	meta, ok := metadata.FromContext(ctx)
 	if !ok {
-		return errors.New("no auth meta-data found in request")
+		return errors.BadRequest("go.micro.api.example", "no auth meta-data found in request")
 	}
 
 	// Note this is now uppercase (not entirely sure why this is...)
 	token := meta["Authorization"]
 	if token == "" {
-		return errors.New("no auth meta-data found in request")
+		return errors.BadRequest("go.micro.api.example", "no auth meta-data found in request")
 	}
-	log.Println("Authenticating with token: ", token)
+
 	tokin := &pb.Token{
 		Token: token,
 	}
@@ -186,15 +186,15 @@ func (srv *service) UpdateUser(ctx context.Context, req *pb.User, res *pb.Respon
 func (srv *service) DeleteUser(ctx context.Context, req *pb.User, res *pb.ResponseUser) error {
 	meta, ok := metadata.FromContext(ctx)
 	if !ok {
-		return errors.New("no auth meta-data found in request")
+		return errors.BadRequest("go.micro.api.example", "no auth meta-data found in request")
 	}
 
 	// Note this is now uppercase (not entirely sure why this is...)
 	token := meta["Authorization"]
 	if token == "" {
-		return errors.New("no auth meta-data found in request")
+		return errors.BadRequest("go.micro.api.example", "no auth meta-data found in request")
 	}
-	log.Println("Authenticating with token: ", token)
+
 	tokin := &pb.Token{
 		Token: token,
 	}
@@ -237,7 +237,8 @@ func (srv *service) Login(ctx context.Context, req *pb.User, res *pb.ResponseUse
 	token := &pb.ResponseToken{}
 	err := srv.Auth(ctx, req, token)
 	if err != nil {
-		return err
+		log.Println("User loging error:", err)
+		return errors.BadRequest("temac.auth", fmt.Sprintf("User loging error:: %v", err))
 	}
 	md := make(metadata.Metadata)
 	md["Authorization"] = token.Token.Token
@@ -256,6 +257,7 @@ func (srv *service) Login(ctx context.Context, req *pb.User, res *pb.ResponseUse
 	res.User = token.User
 	res.Token = token.Token
 	res.Rules = rule.Rules
+	log.Println("User loged: ", res)
 	return nil
 }
 
@@ -266,12 +268,13 @@ func (srv *service) Create(ctx context.Context, req *pb.User, res *pb.ResponseUs
 	// Generates a hashed version of our password
 	hashedPass, err := bcrypt.GenerateFromPassword([]byte(req.Password), bcrypt.DefaultCost)
 	if err != nil {
-		return errors.New(fmt.Sprintf("error hashing password: %v", err))
+		return errors.BadRequest("go.micro.api.example", fmt.Sprintf("error hashing password: %v", err))
 	}
 
 	req.Password = string(hashedPass)
 	if err := srv.repo.Create(req); err != nil {
-		return errors.New(fmt.Sprintf("error creating user: %v", err))
+		log.Println("error creating user: %v", err)
+		return errors.BadRequest("go.micro.api.example", fmt.Sprintf("error creating user: %v", err))
 	}
 
 	token, err := srv.tokenService.Encode(req)
@@ -284,14 +287,13 @@ func (srv *service) Create(ctx context.Context, req *pb.User, res *pb.ResponseUs
 
 	/*
 		if err := srv.Publisher.Publish(ctx, req); err != nil {
-			return errors.New(fmt.Sprintf("error publishing event: %v", err))
+			return BadRequest("go.micro.api.example",fmt.Sprintf("error publishing event: %v", err))
 		}*/
 
 	return nil
 }
 
 func (srv *service) ValidateToken(ctx context.Context, req *pb.Token, res *pb.ResponseToken) error {
-	log.Println("validating token:", req.Token)
 	// Decode token
 	claims, err := srv.tokenService.Decode(req.Token)
 
@@ -299,8 +301,8 @@ func (srv *service) ValidateToken(ctx context.Context, req *pb.Token, res *pb.Re
 		return err
 	}
 
-	if claims.User.Id == "" {
-		return errors.New("invalid user")
+	if claims.User.Idcode == "" {
+		return errors.BadRequest("go.micro.api.example", "invalid user")
 	}
 
 	res.Token = &pb.Token{Valid: true}
@@ -309,16 +311,15 @@ func (srv *service) ValidateToken(ctx context.Context, req *pb.Token, res *pb.Re
 	return nil
 }
 func (srv *service) UserToken(ctx context.Context, req *pb.Token, res *pb.ResponseUser) error {
-	log.Println("validating token:", req.Token)
-	// Decode token
+	log.Println("validating token:", req.Token) // Decode token
 	claims, err := srv.tokenService.Decode(req.Token)
 
 	if err != nil {
 		return err
 	}
 
-	if claims.User.Id == "" {
-		return errors.New("invalid user")
+	if claims.User.Idcode == "" {
+		return errors.BadRequest("go.micro.api.example", "invalid user")
 	}
 	md := make(metadata.Metadata)
 	md["Authorization"] = req.Token
@@ -344,15 +345,15 @@ func (srv *service) CreateRole(ctx context.Context, req *pb.Role, res *pb.Respon
 	log.Println("Creating role: ", req)
 	meta, ok := metadata.FromContext(ctx)
 	if !ok {
-		return errors.New("no auth meta-data found in request")
+		return errors.BadRequest("go.micro.api.example", "no auth meta-data found in request")
 	}
 
 	// Note this is now uppercase (not entirely sure why this is...)
 	token := meta["Authorization"]
 	if token == "" {
-		return errors.New("no auth meta-data found in request")
+		return errors.BadRequest("go.micro.api.example", "no auth meta-data found in request")
 	}
-	log.Println("Authenticating with token: ", token)
+
 	tokin := &pb.Token{
 		Token: token,
 	}
@@ -361,10 +362,28 @@ func (srv *service) CreateRole(ctx context.Context, req *pb.Role, res *pb.Respon
 	if err != nil {
 		return err
 	}
-	if err := srv.repo.CreateRole(req); err != nil {
-		return errors.New(fmt.Sprintf("error creating role: %v", err))
+	log.Println("Creating role 1: ", req)
+	for i, element := range req.Menues {
+		if element.Idcode == "" {
+			menu, err := srv.repo.GetMenubyName(element.Name)
+			if err != nil {
+				return errors.BadRequest("go.micro.api.example", fmt.Sprintf("error creating role: %v", err))
+			}
+			req.Menues[i] = &pb.Menu{Idcode: menu.Idcode}
+		} else {
+			req.Menues[i] = &pb.Menu{Idcode: element.Idcode}
+		}
 	}
-
+	log.Println("Creating role 2: ", req)
+	if req.Rules == nil {
+		temprule := make([]*pb.Rules, 1)
+		temprule[0] = &pb.Rules{Actions: "read", Subject: "all"}
+		req.Rules = temprule
+	}
+	log.Println("Creating role 3: ", req)
+	if err := srv.repo.CreateRole(req); err != nil {
+		return errors.BadRequest("go.micro.api.example", fmt.Sprintf("error creating role: %v", err))
+	}
 	res.Role = req
 	return nil
 }
@@ -372,15 +391,15 @@ func (srv *service) UpdateRole(ctx context.Context, req *pb.Role, res *pb.Respon
 	log.Println("Creating role: ", req)
 	meta, ok := metadata.FromContext(ctx)
 	if !ok {
-		return errors.New("no auth meta-data found in request")
+		return errors.BadRequest("go.micro.api.example", "no auth meta-data found in request")
 	}
 
 	// Note this is now uppercase (not entirely sure why this is...)
 	token := meta["Authorization"]
 	if token == "" {
-		return errors.New("no auth meta-data found in request")
+		return errors.BadRequest("go.micro.api.example", "no auth meta-data found in request")
 	}
-	log.Println("Authenticating with token: ", token)
+
 	tokin := &pb.Token{
 		Token: token,
 	}
@@ -390,7 +409,7 @@ func (srv *service) UpdateRole(ctx context.Context, req *pb.Role, res *pb.Respon
 		return err
 	}
 	if err := srv.repo.UpdateRole(req); err != nil {
-		return errors.New(fmt.Sprintf("error creating role: %v", err))
+		return errors.BadRequest("go.micro.api.example", fmt.Sprintf("error creating role: %v", err))
 	}
 
 	res.Role = req
@@ -399,15 +418,15 @@ func (srv *service) UpdateRole(ctx context.Context, req *pb.Role, res *pb.Respon
 func (srv *service) GetRole(ctx context.Context, req *pb.Role, res *pb.ResponseRole) error {
 	meta, ok := metadata.FromContext(ctx)
 	if !ok {
-		return errors.New("no auth meta-data found in request")
+		return errors.BadRequest("go.micro.api.example", "no auth meta-data found in request")
 	}
 
 	// Note this is now uppercase (not entirely sure why this is...)
 	token := meta["Authorization"]
 	if token == "" {
-		return errors.New("no auth meta-data found in request")
+		return errors.BadRequest("go.micro.api.example", "no auth meta-data found in request")
 	}
-	log.Println("Authenticating with token: ", token)
+
 	tokin := &pb.Token{
 		Token: token,
 	}
@@ -416,7 +435,7 @@ func (srv *service) GetRole(ctx context.Context, req *pb.Role, res *pb.ResponseR
 	if err != nil {
 		return err
 	}
-	role, err := srv.repo.GetRole(req.Id)
+	role, err := srv.repo.GetRole(req.Idcode)
 	if err != nil {
 		return err
 	}
@@ -426,15 +445,15 @@ func (srv *service) GetRole(ctx context.Context, req *pb.Role, res *pb.ResponseR
 func (srv *service) DeleteRole(ctx context.Context, req *pb.Role, res *pb.ResponseRole) error {
 	meta, ok := metadata.FromContext(ctx)
 	if !ok {
-		return errors.New("no auth meta-data found in request")
+		return errors.BadRequest("go.micro.api.example", "no auth meta-data found in request")
 	}
 
 	// Note this is now uppercase (not entirely sure why this is...)
 	token := meta["Authorization"]
 	if token == "" {
-		return errors.New("no auth meta-data found in request")
+		return errors.BadRequest("go.micro.api.example", "no auth meta-data found in request")
 	}
-	log.Println("Authenticating with token: ", token)
+
 	tokin := &pb.Token{
 		Token: token,
 	}
@@ -453,15 +472,15 @@ func (srv *service) DeleteRole(ctx context.Context, req *pb.Role, res *pb.Respon
 func (srv *service) GetAllRoles(ctx context.Context, req *pb.Request, res *pb.ResponseRole) error {
 	meta, ok := metadata.FromContext(ctx)
 	if !ok {
-		return errors.New("no auth meta-data found in request")
+		return errors.BadRequest("go.micro.api.example", "no auth meta-data found in request")
 	}
 
 	// Note this is now uppercase (not entirely sure why this is...)
 	token := meta["Authorization"]
 	if token == "" {
-		return errors.New("no auth meta-data found in request")
+		return errors.BadRequest("go.micro.api.example", "no auth meta-data found in request")
 	}
-	log.Println("Authenticating with token: ", token)
+
 	tokin := &pb.Token{
 		Token: token,
 	}
@@ -482,15 +501,15 @@ func (srv *service) CreateMenu(ctx context.Context, req *pb.Menu, res *pb.Respon
 	log.Println("Creating menu: ", req)
 	meta, ok := metadata.FromContext(ctx)
 	if !ok {
-		return errors.New("no auth meta-data found in request")
+		return errors.BadRequest("go.micro.api.example", "no auth meta-data found in request")
 	}
 
 	// Note this is now uppercase (not entirely sure why this is...)
 	token := meta["Authorization"]
 	if token == "" {
-		return errors.New("no auth meta-data found in request")
+		return errors.BadRequest("go.micro.api.example", "no auth meta-data found in request")
 	}
-	log.Println("Authenticating with token: ", token)
+
 	tokin := &pb.Token{
 		Token: token,
 	}
@@ -500,7 +519,7 @@ func (srv *service) CreateMenu(ctx context.Context, req *pb.Menu, res *pb.Respon
 		return err
 	}
 	if err := srv.repo.CreateMenu(req); err != nil {
-		return errors.New(fmt.Sprintf("error creating menu: %v", err))
+		return errors.BadRequest("go.micro.api.example", fmt.Sprintf("error creating menu: %v", err))
 	}
 
 	res.Menu = req
@@ -510,15 +529,15 @@ func (srv *service) UpdateMenu(ctx context.Context, req *pb.Menu, res *pb.Respon
 	log.Println("Updating menu: ", req)
 	meta, ok := metadata.FromContext(ctx)
 	if !ok {
-		return errors.New("no auth meta-data found in request")
+		return errors.BadRequest("go.micro.api.example", "no auth meta-data found in request")
 	}
 
 	// Note this is now uppercase (not entirely sure why this is...)
 	token := meta["Authorization"]
 	if token == "" {
-		return errors.New("no auth meta-data found in request")
+		return errors.BadRequest("go.micro.api.example", "no auth meta-data found in request")
 	}
-	log.Println("Authenticating with token: ", token)
+
 	tokin := &pb.Token{
 		Token: token,
 	}
@@ -528,7 +547,7 @@ func (srv *service) UpdateMenu(ctx context.Context, req *pb.Menu, res *pb.Respon
 		return err
 	}
 	if err := srv.repo.UpdateMenu(req); err != nil {
-		return errors.New(fmt.Sprintf("error updating menu: %v", err))
+		return errors.BadRequest("go.micro.api.example", fmt.Sprintf("error updating menu: %v", err))
 	}
 
 	res.Menu = req
@@ -537,15 +556,15 @@ func (srv *service) UpdateMenu(ctx context.Context, req *pb.Menu, res *pb.Respon
 func (srv *service) GetMenu(ctx context.Context, req *pb.Menu, res *pb.ResponseMenu) error {
 	meta, ok := metadata.FromContext(ctx)
 	if !ok {
-		return errors.New("no auth meta-data found in request")
+		return errors.BadRequest("go.micro.api.example", "no auth meta-data found in request")
 	}
 
 	// Note this is now uppercase (not entirely sure why this is...)
 	token := meta["Authorization"]
 	if token == "" {
-		return errors.New("no auth meta-data found in request")
+		return errors.BadRequest("go.micro.api.example", "no auth meta-data found in request")
 	}
-	log.Println("Authenticating with token: ", token)
+
 	tokin := &pb.Token{
 		Token: token,
 	}
@@ -554,7 +573,7 @@ func (srv *service) GetMenu(ctx context.Context, req *pb.Menu, res *pb.ResponseM
 	if err != nil {
 		return err
 	}
-	menu, err := srv.repo.GetMenu(req.Id)
+	menu, err := srv.repo.GetMenu(req.Idcode)
 	if err != nil {
 		return err
 	}
@@ -564,15 +583,15 @@ func (srv *service) GetMenu(ctx context.Context, req *pb.Menu, res *pb.ResponseM
 func (srv *service) GetAllMenues(ctx context.Context, req *pb.Request, res *pb.ResponseMenu) error {
 	meta, ok := metadata.FromContext(ctx)
 	if !ok {
-		return errors.New("no auth meta-data found in request")
+		return errors.BadRequest("go.micro.api.example", "no auth meta-data found in request")
 	}
 
 	// Note this is now uppercase (not entirely sure why this is...)
 	token := meta["Authorization"]
 	if token == "" {
-		return errors.New("no auth meta-data found in request")
+		return errors.BadRequest("go.micro.api.example", "no auth meta-data found in request")
 	}
-	log.Println("Authenticating with token: ", token)
+
 	tokin := &pb.Token{
 		Token: token,
 	}
@@ -593,15 +612,15 @@ func (srv *service) CreateForm(ctx context.Context, req *pb.Form, res *pb.Respon
 	log.Println("Creating form: ", req)
 	meta, ok := metadata.FromContext(ctx)
 	if !ok {
-		return errors.New("no auth meta-data found in request")
+		return errors.BadRequest("go.micro.api.example", "no auth meta-data found in request")
 	}
 
 	// Note this is now uppercase (not entirely sure why this is...)
 	token := meta["Authorization"]
 	if token == "" {
-		return errors.New("no auth meta-data found in request")
+		return errors.BadRequest("go.micro.api.example", "no auth meta-data found in request")
 	}
-	log.Println("Authenticating with token: ", token)
+
 	tokin := &pb.Token{
 		Token: token,
 	}
@@ -611,25 +630,25 @@ func (srv *service) CreateForm(ctx context.Context, req *pb.Form, res *pb.Respon
 		return err
 	}
 	if err := srv.repo.CreateForm(req); err != nil {
-		return errors.New(fmt.Sprintf("error creating form: %v", err))
+		return errors.BadRequest("go.micro.api.example", fmt.Sprintf("error creating form: %v", err))
 	}
 
 	res.Form = req
 	return nil
 }
 func (srv *service) GetForm(ctx context.Context, req *pb.Form, res *pb.ResponseForm) error {
-	log.Println("Getting form: ", req, "with id:", req.Id)
+	log.Println("Getting form: ", req, "with name:", req.Name)
 	meta, ok := metadata.FromContext(ctx)
 	if !ok {
-		return errors.New("no auth meta-data found in request")
+		return errors.BadRequest("go.micro.api.example", "no auth meta-data found in request")
 	}
 
 	// Note this is now uppercase (not entirely sure why this is...)
 	token := meta["Authorization"]
 	if token == "" {
-		return errors.New("no auth meta-data found in request")
+		return errors.BadRequest("go.micro.api.example", "no auth meta-data found in request")
 	}
-	log.Println("Authenticating with token: ", token)
+
 	tokin := &pb.Token{
 		Token: token,
 	}
@@ -638,7 +657,7 @@ func (srv *service) GetForm(ctx context.Context, req *pb.Form, res *pb.ResponseF
 	if err != nil {
 		return err
 	}
-	form, err := srv.repo.GetForm(req.Id)
+	form, err := srv.repo.GetForm(req.Name)
 	if err != nil {
 		return err
 	}
@@ -646,18 +665,18 @@ func (srv *service) GetForm(ctx context.Context, req *pb.Form, res *pb.ResponseF
 	return nil
 }
 func (srv *service) DeleteForm(ctx context.Context, req *pb.Form, res *pb.ResponseForm) error {
-	log.Println("Getting form: ", req, "with id:", req.Id)
+	log.Println("Getting form: ", req, "with idcode:", req.Idcode)
 	meta, ok := metadata.FromContext(ctx)
 	if !ok {
-		return errors.New("no auth meta-data found in request")
+		return errors.BadRequest("go.micro.api.example", "no auth meta-data found in request")
 	}
 
 	// Note this is now uppercase (not entirely sure why this is...)
 	token := meta["Authorization"]
 	if token == "" {
-		return errors.New("no auth meta-data found in request")
+		return errors.BadRequest("go.micro.api.example", "no auth meta-data found in request")
 	}
-	log.Println("Authenticating with token: ", token)
+
 	tokin := &pb.Token{
 		Token: token,
 	}
@@ -674,18 +693,18 @@ func (srv *service) DeleteForm(ctx context.Context, req *pb.Form, res *pb.Respon
 	return nil
 }
 func (srv *service) UpdateForm(ctx context.Context, req *pb.Form, res *pb.ResponseForm) error {
-	log.Println("Updating form: ", req, "with id:", req.Id)
+	log.Println("Updating form: ", req, "with idcode:", req.Idcode)
 	meta, ok := metadata.FromContext(ctx)
 	if !ok {
-		return errors.New("no auth meta-data found in request")
+		return errors.BadRequest("go.micro.api.example", "no auth meta-data found in request")
 	}
 
 	// Note this is now uppercase (not entirely sure why this is...)
 	token := meta["Authorization"]
 	if token == "" {
-		return errors.New("no auth meta-data found in request")
+		return errors.BadRequest("go.micro.api.example", "no auth meta-data found in request")
 	}
-	log.Println("Authenticating with token: ", token)
+
 	tokin := &pb.Token{
 		Token: token,
 	}
@@ -704,15 +723,15 @@ func (srv *service) UpdateForm(ctx context.Context, req *pb.Form, res *pb.Respon
 func (srv *service) GetAllForms(ctx context.Context, req *pb.Request, res *pb.ResponseForm) error {
 	meta, ok := metadata.FromContext(ctx)
 	if !ok {
-		return errors.New("no auth meta-data found in request")
+		return errors.BadRequest("go.micro.api.example", "no auth meta-data found in request")
 	}
 
 	// Note this is now uppercase (not entirely sure why this is...)
 	token := meta["Authorization"]
 	if token == "" {
-		return errors.New("no auth meta-data found in request")
+		return errors.BadRequest("go.micro.api.example", "no auth meta-data found in request")
 	}
-	log.Println("Authenticating with token: ", token)
+
 	tokin := &pb.Token{
 		Token: token,
 	}
@@ -732,15 +751,15 @@ func (srv *service) DeleteFields(ctx context.Context, req *pb.Form, res *pb.Erro
 	log.Println("Deleting fields")
 	meta, ok := metadata.FromContext(ctx)
 	if !ok {
-		return errors.New("no auth meta-data found in request")
+		return errors.BadRequest("go.micro.api.example", "no auth meta-data found in request")
 	}
 
 	// Note this is now uppercase (not entirely sure why this is...)
 	token := meta["Authorization"]
 	if token == "" {
-		return errors.New("no auth meta-data found in request")
+		return errors.BadRequest("go.micro.api.example", "no auth meta-data found in request")
 	}
-	log.Println("Authenticating with token: ", token)
+
 	tokin := &pb.Token{
 		Token: token,
 	}
@@ -760,15 +779,15 @@ func (srv *service) DeleteTabs(ctx context.Context, req *pb.Form, res *pb.Error)
 	log.Println("Deleting tabs")
 	meta, ok := metadata.FromContext(ctx)
 	if !ok {
-		return errors.New("no auth meta-data found in request")
+		return errors.BadRequest("go.micro.api.example", "no auth meta-data found in request")
 	}
 
 	// Note this is now uppercase (not entirely sure why this is...)
 	token := meta["Authorization"]
 	if token == "" {
-		return errors.New("no auth meta-data found in request")
+		return errors.BadRequest("go.micro.api.example", "no auth meta-data found in request")
 	}
-	log.Println("Authenticating with token: ", token)
+
 	tokin := &pb.Token{
 		Token: token,
 	}
@@ -789,15 +808,15 @@ func (srv *service) CreateSchema(ctx context.Context, req *pb.FormSchema, res *p
 	log.Println("Creating schema: ", req)
 	meta, ok := metadata.FromContext(ctx)
 	if !ok {
-		return errors.New("no auth meta-data found in request")
+		return errors.BadRequest("go.micro.api.example", "no auth meta-data found in request")
 	}
 
 	// Note this is now uppercase (not entirely sure why this is...)
 	token := meta["Authorization"]
 	if token == "" {
-		return errors.New("no auth meta-data found in request")
+		return errors.BadRequest("go.micro.api.example", "no auth meta-data found in request")
 	}
-	log.Println("Authenticating with token: ", token)
+
 	tokin := &pb.Token{
 		Token: token,
 	}
@@ -807,7 +826,7 @@ func (srv *service) CreateSchema(ctx context.Context, req *pb.FormSchema, res *p
 		return err
 	}
 	if err := srv.repo.CreateSchema(req); err != nil {
-		return errors.New(fmt.Sprintf("error creating schema: %v", err))
+		return errors.BadRequest("go.micro.api.example", fmt.Sprintf("error creating schema: %v", err))
 	}
 
 	res.Formschema = req
@@ -817,15 +836,15 @@ func (srv *service) UpdateSchema(ctx context.Context, req *pb.FormSchema, res *p
 	log.Println("Updating schema: ", req)
 	meta, ok := metadata.FromContext(ctx)
 	if !ok {
-		return errors.New("no auth meta-data found in request")
+		return errors.BadRequest("go.micro.api.example", "no auth meta-data found in request")
 	}
 
 	// Note this is now uppercase (not entirely sure why this is...)
 	token := meta["Authorization"]
 	if token == "" {
-		return errors.New("no auth meta-data found in request")
+		return errors.BadRequest("go.micro.api.example", "no auth meta-data found in request")
 	}
-	log.Println("Authenticating with token: ", token)
+
 	tokin := &pb.Token{
 		Token: token,
 	}
@@ -835,7 +854,7 @@ func (srv *service) UpdateSchema(ctx context.Context, req *pb.FormSchema, res *p
 		return err
 	}
 	if err := srv.repo.UpdateSchema(req); err != nil {
-		return errors.New(fmt.Sprintf("error updating schema: %v", err))
+		return errors.BadRequest("go.micro.api.example", fmt.Sprintf("error updating schema: %v", err))
 	}
 
 	res.Formschema = req
@@ -844,15 +863,15 @@ func (srv *service) UpdateSchema(ctx context.Context, req *pb.FormSchema, res *p
 func (srv *service) GetSchema(ctx context.Context, req *pb.FormSchema, res *pb.ResponseFormSchema) error {
 	meta, ok := metadata.FromContext(ctx)
 	if !ok {
-		return errors.New("no auth meta-data found in request")
+		return errors.BadRequest("go.micro.api.example", "no auth meta-data found in request")
 	}
 
 	// Note this is now uppercase (not entirely sure why this is...)
 	token := meta["Authorization"]
 	if token == "" {
-		return errors.New("no auth meta-data found in request")
+		return errors.BadRequest("go.micro.api.example", "no auth meta-data found in request")
 	}
-	log.Println("Authenticating with token: ", token)
+
 	tokin := &pb.Token{
 		Token: token,
 	}
@@ -861,7 +880,7 @@ func (srv *service) GetSchema(ctx context.Context, req *pb.FormSchema, res *pb.R
 	if err != nil {
 		return err
 	}
-	schema, err := srv.repo.GetSchema(req.Id)
+	schema, err := srv.repo.GetSchema(req.Idcode)
 	if err != nil {
 		return err
 	}
@@ -871,15 +890,15 @@ func (srv *service) GetSchema(ctx context.Context, req *pb.FormSchema, res *pb.R
 func (srv *service) GetAllSchemas(ctx context.Context, req *pb.Request, res *pb.ResponseFormSchema) error {
 	meta, ok := metadata.FromContext(ctx)
 	if !ok {
-		return errors.New("no auth meta-data found in request")
+		return errors.BadRequest("go.micro.api.example", "no auth meta-data found in request")
 	}
 
 	// Note this is now uppercase (not entirely sure why this is...)
 	token := meta["Authorization"]
 	if token == "" {
-		return errors.New("no auth meta-data found in request")
+		return errors.BadRequest("go.micro.api.example", "no auth meta-data found in request")
 	}
-	log.Println("Authenticating with token: ", token)
+
 	tokin := &pb.Token{
 		Token: token,
 	}
@@ -899,15 +918,15 @@ func (srv *service) DeleteSchema(ctx context.Context, req *pb.FormSchema, res *p
 	log.Println("Deleting FormSchema")
 	meta, ok := metadata.FromContext(ctx)
 	if !ok {
-		return errors.New("no auth meta-data found in request")
+		return errors.BadRequest("go.micro.api.example", "no auth meta-data found in request")
 	}
 
 	// Note this is now uppercase (not entirely sure why this is...)
 	token := meta["Authorization"]
 	if token == "" {
-		return errors.New("no auth meta-data found in request")
+		return errors.BadRequest("go.micro.api.example", "no auth meta-data found in request")
 	}
-	log.Println("Authenticating with token: ", token)
+
 	tokin := &pb.Token{
 		Token: token,
 	}

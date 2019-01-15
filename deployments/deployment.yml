@@ -17,7 +17,7 @@ spec:
           image: inigofu/user:latest
           imagePullPolicy: Always
           command: [
-            "./shippy-user-service",
+            "./temac-user-service",
             "--selector=static",
             "--server_address=:8080"
           ]
