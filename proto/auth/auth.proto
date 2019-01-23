@@ -182,7 +182,7 @@ string type = 1;
 string label = 2;
 // @inject_tag: `gorm:""default:'none'""`//Name of property in the model
 string model =3;
-// @inject_tag: `gorm:""default:'auto-generated'""`//idcode of the field. If not set, will be auto-generated from the slugified version of either: schema.inputName, schema.label or schema.model, in that order. If the fieldIdPrefix option is set, it's value will be prepended to both manual & auto-generated ids.
+// @inject_tag: `gorm:"primary_key"`//idcode of the field. If not set, will be auto-generated from the slugified version of either: schema.inputName, schema.label or schema.model, in that order. If the fieldIdPrefix option is set, it's value will be prepended to both manual & auto-generated ids.
 string idcode = 4;
 // @inject_tag: `gorm:""default:'false'""`//is it a featured (bold) field? It can be a function too.
 bool featured = 5;
@@ -258,8 +258,8 @@ message SelectOptions {
 }
 message Values {
     // @inject_tag: gorm:"primary_key"
-    string idcode = 1;
-    string value = 2;
+    string id = 1;
+    string name = 2;
     string SchemaRefer = 3;
 }
       
