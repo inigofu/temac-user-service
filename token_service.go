@@ -1,11 +1,10 @@
 package main
 
 import (
-	"fmt"
 	"strings"
 	"time"
 
-	"github.com/dgrijalva/jwt-go"
+	jwt "github.com/dgrijalva/jwt-go"
 	pb "github.com/inigofu/temac-user-service/proto/auth"
 )
 
@@ -36,7 +35,6 @@ type TokenService struct {
 
 // Decode a token string into a token object
 func (srv *TokenService) Decode(tokenString string) (*CustomClaims, error) {
-	fmt.Println(tokenString)
 	// Parse the token
 	splitToken := strings.Split(tokenString, "Bearer ")
 	if len(splitToken) >= 2 {
@@ -47,7 +45,6 @@ func (srv *TokenService) Decode(tokenString string) (*CustomClaims, error) {
 	token, err := jwt.ParseWithClaims(tokenString, &CustomClaims{}, func(token *jwt.Token) (interface{}, error) {
 		return key, nil
 	})
-	fmt.Println(token)
 	// Validate the token and return the custom claims
 	if claims, ok := token.Claims.(*CustomClaims); ok && token.Valid {
 		return claims, nil

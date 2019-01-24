@@ -311,7 +311,7 @@ func (srv *service) ValidateToken(ctx context.Context, req *pb.Token, res *pb.Re
 	return nil
 }
 func (srv *service) UserToken(ctx context.Context, req *pb.Token, res *pb.ResponseUser) error {
-	log.Println("validating token:", req.Token) // Decode token
+	log.Println("validating token") // Decode token
 	claims, err := srv.tokenService.Decode(req.Token)
 
 	if err != nil {

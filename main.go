@@ -7,7 +7,6 @@ import (
 
 	pb "github.com/inigofu/temac-user-service/proto/auth"
 	micro "github.com/micro/go-micro"
-	_ "github.com/micro/go-plugins/registry/mdns"
 )
 
 var (
