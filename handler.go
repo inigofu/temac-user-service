@@ -1,8 +1,10 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
+	"os"
 
 	pb "github.com/inigofu/temac-user-service/proto/auth"
 	"github.com/micro/go-micro/errors"
@@ -16,6 +18,122 @@ const topic = "user.created"
 type service struct {
 	repo         Repository
 	tokenService Authable
+}
+
+func (srv *service) NewDB(ctx context.Context, req *pb.Request, res *pb.ResponseUser) error {
+	// Create new greeter client
+	//client := pb.NewAuthService("temac.auth", microclient.DefaultClient)
+
+	var user pb.User
+	ruser := &pb.ResponseUser{}
+	configFile, err := os.Open("user.json")
+	defer configFile.Close()
+	if err != nil {
+		log.Println(err.Error())
+	}
+	jsonParser := json.NewDecoder(configFile)
+	jsonParser.Decode(&user)
+	log.Print("user", user)
+
+	err = srv.Create(ctx, &user, ruser)
+	if err != nil {
+		log.Println("Could not create: %v", err)
+	} else {
+		log.Printf("Created: %s", ruser.User.Idcode)
+	}
+	rauth := &pb.ResponseToken{}
+	log.Print("Auth user:", user)
+	err = srv.Auth(ctx, &user, rauth)
+	if err != nil {
+		log.Fatalf("Could not auth: %v", err)
+	}
+	// let's just exit because
+	log.Println("autg with token", rauth.Token.Token)
+
+	var menu pb.Menu
+	rmenu := &pb.ResponseMenu{}
+	configFile, err = os.Open("menu.json")
+	defer configFile.Close()
+	if err != nil {
+		log.Println(err.Error())
+	}
+	jsonParser = json.NewDecoder(configFile)
+	jsonParser.Decode(&menu)
+	log.Println("menu", menu)
+	ctx_new := metadata.NewContext(ctx, map[string]string{
+		"Authorization": rauth.Token.Token,
+	})
+	err = srv.CreateMenu(ctx_new, &menu, rmenu)
+	if err != nil {
+		log.Println("Could not create: %v", err)
+		return err
+	} else {
+		log.Printf("Created menu: %s", rmenu)
+	}
+
+	var role pb.Role
+	rrole := &pb.ResponseRole{}
+	configFile, err = os.Open("role.json")
+	defer configFile.Close()
+	if err != nil {
+		log.Println(err.Error())
+		return err
+	}
+	jsonParser = json.NewDecoder(configFile)
+	jsonParser.Decode(&role)
+	log.Println("role", role)
+
+	err = srv.CreateRole(ctx_new, &role, rrole)
+	if err != nil {
+		log.Println("Could not create: %v", err)
+		return err
+	} else {
+		log.Printf("Created role: %s", rrole)
+	}
+	temprole := make([]*pb.Role, 1)
+	temprole[0] = &pb.Role{Idcode: rrole.Role.Idcode}
+	user = *ruser.User
+	user.Roles = temprole
+	log.Printf("Updating user: %s", user)
+	err = srv.UpdateUser(ctx_new, &user, ruser)
+	if err != nil {
+		log.Println("Could not update: %v", err)
+		return err
+	} else {
+		log.Printf("Created use: %s", ruser)
+	}
+	var form []pb.Form
+	rform := &pb.ResponseForm{}
+	configFile, err = os.Open("form.json")
+	defer configFile.Close()
+	if err != nil {
+		log.Println(err.Error())
+		return err
+	}
+	jsonParser = json.NewDecoder(configFile)
+	jsonParser.Decode(&form)
+	log.Println("form", form)
+	for _, element := range form {
+		err = srv.CreateForm(ctx_new, &element, rform)
+		if err != nil {
+			log.Println("Could not create form: %v", err)
+			return err
+		} else {
+			log.Printf("Created form: %s", rform)
+		}
+	}
+	log.Printf("Procedure finished")
+	return nil
+}
+func (srv *service) GetIsNewDB(ctx context.Context, req *pb.Request, res *pb.IsNewDB) error {
+	isnewdb, err := srv.repo.NewDB()
+	if err != nil {
+		return err
+	}
+	log.Println("NewDB response:", isnewdb)
+	res.Isnew = isnewdb.Isnew
+
+	return nil
 }
 
 func (srv *service) Get(ctx context.Context, req *pb.User, res *pb.ResponseUser) error {
@@ -271,18 +389,19 @@ func (srv *service) Create(ctx context.Context, req *pb.User, res *pb.ResponseUs
 		return errors.BadRequest("go.micro.api.example", fmt.Sprintf("error hashing password: %v", err))
 	}
 
-	req.Password = string(hashedPass)
-	if err := srv.repo.Create(req); err != nil {
+	tmpUser := &pb.User{}
+	*tmpUser = *req
+	tmpUser.Password = string(hashedPass)
+	if err := srv.repo.Create(tmpUser); err != nil {
 		log.Println("error creating user: %v", err)
 		return errors.BadRequest("go.micro.api.example", fmt.Sprintf("error creating user: %v", err))
 	}
 
-	token, err := srv.tokenService.Encode(req)
+	token, err := srv.tokenService.Encode(tmpUser)
 	if err != nil {
 		return err
 	}
-
-	res.User = req
+	res.User = tmpUser
 	res.Token = &pb.Token{Token: token}
 
 	/*

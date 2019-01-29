@@ -10,6 +10,7 @@ It is generated from these files:
 It has these top-level messages:
 	User
 	Request
+	IsNewDB
 	ResponseUser
 	ResponseRole
 	ResponseMenu
@@ -97,6 +98,8 @@ type AuthService interface {
 	UpdateSchema(ctx context.Context, in *FormSchema, opts ...client.CallOption) (*ResponseFormSchema, error)
 	DeleteSchema(ctx context.Context, in *FormSchema, opts ...client.CallOption) (*Error, error)
 	GetAllSchemas(ctx context.Context, in *Request, opts ...client.CallOption) (*ResponseFormSchema, error)
+	NewDB(ctx context.Context, in *Request, opts ...client.CallOption) (*ResponseUser, error)
+	GetIsNewDB(ctx context.Context, in *Request, opts ...client.CallOption) (*IsNewDB, error)
 }
 
 type authService struct {
@@ -447,6 +450,26 @@ func (c *authService) GetAllSchemas(ctx context.Context, in *Request, opts ...cl
 	return out, nil
 }
 
+func (c *authService) NewDB(ctx context.Context, in *Request, opts ...client.CallOption) (*ResponseUser, error) {
+	req := c.c.NewRequest(c.name, "Auth.NewDB", in)
+	out := new(ResponseUser)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *authService) GetIsNewDB(ctx context.Context, in *Request, opts ...client.CallOption) (*IsNewDB, error) {
+	req := c.c.NewRequest(c.name, "Auth.GetIsNewDB", in)
+	out := new(IsNewDB)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // Server API for Auth service
 
 type AuthHandler interface {
@@ -483,6 +506,8 @@ type AuthHandler interface {
 	UpdateSchema(context.Context, *FormSchema, *ResponseFormSchema) error
 	DeleteSchema(context.Context, *FormSchema, *Error) error
 	GetAllSchemas(context.Context, *Request, *ResponseFormSchema) error
+	NewDB(context.Context, *Request, *ResponseUser) error
+	GetIsNewDB(context.Context, *Request, *IsNewDB) error
 }
 
 func RegisterAuthHandler(s server.Server, hdlr AuthHandler, opts ...server.HandlerOption) error {
@@ -520,6 +545,8 @@ func RegisterAuthHandler(s server.Server, hdlr AuthHandler, opts ...server.Handl
 		UpdateSchema(ctx context.Context, in *FormSchema, out *ResponseFormSchema) error
 		DeleteSchema(ctx context.Context, in *FormSchema, out *Error) error
 		GetAllSchemas(ctx context.Context, in *Request, out *ResponseFormSchema) error
+		NewDB(ctx context.Context, in *Request, out *ResponseUser) error
+		GetIsNewDB(ctx context.Context, in *Request, out *IsNewDB) error
 	}
 	type Auth struct {
 		auth
@@ -662,4 +689,12 @@ func (h *authHandler) DeleteSchema(ctx context.Context, in *FormSchema, out *Err
 
 func (h *authHandler) GetAllSchemas(ctx context.Context, in *Request, out *ResponseFormSchema) error {
 	return h.AuthHandler.GetAllSchemas(ctx, in, out)
+}
+
+func (h *authHandler) NewDB(ctx context.Context, in *Request, out *ResponseUser) error {
+	return h.AuthHandler.NewDB(ctx, in, out)
+}
+
+func (h *authHandler) GetIsNewDB(ctx context.Context, in *Request, out *IsNewDB) error {
+	return h.AuthHandler.GetIsNewDB(ctx, in, out)
 }

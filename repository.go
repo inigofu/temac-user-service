@@ -10,6 +10,7 @@ import (
 )
 
 type Repository interface {
+	NewDB() (*pb.IsNewDB, error)
 	GetAll() ([]*pb.User, error)
 	GetAllUsersRole() ([]*pb.User, error)
 	Get(idcode string) (*pb.User, error)
@@ -47,6 +48,21 @@ type UserRepository struct {
 	db *gorm.DB
 }
 
+func (repo *UserRepository) NewDB() (*pb.IsNewDB, error) {
+	log.Println("Entering NewDB")
+	var users []*pb.User
+	var count int32
+	isnewdb := &pb.IsNewDB{Isnew: false}
+
+	if err := repo.db.Find(&users).Count(&count).Error; err != nil {
+		return nil, err
+	}
+	if count > 0 {
+		isnewdb.Isnew = true
+	}
+	log.Println("NewDB get ansuwer:", isnewdb)
+	return isnewdb, nil
+}
 func (repo *UserRepository) GetAll() ([]*pb.User, error) {
 	log.Println("Entering GetAll")
 	var users []*pb.User
@@ -260,9 +276,9 @@ func (repo *UserRepository) GetForm(name string) (*pb.Form, error) {
 	if err := repo.db.Preload("Fields", func(db *gorm.DB) *gorm.DB {
 		return repo.db.Order("form_schemas.order ASC")
 	}).Preload("Fields.Values").Preload("Fields.Selectoptions").Preload("Tabs").
-	Preload("Tabs.Fields", func(db *gorm.DB) *gorm.DB {
-		return repo.db.Order("form_schemas.order ASC")
-	}).Preload("Tabs.Fields.Values").Preload("Tabs.Fields.Selectoptions").Where("name = ?", name).
+		Preload("Tabs.Fields", func(db *gorm.DB) *gorm.DB {
+			return repo.db.Order("form_schemas.order ASC")
+		}).Preload("Tabs.Fields.Values").Preload("Tabs.Fields.Selectoptions").Where("name = ?", name).
 		First(&form).Error; err != nil {
 		return nil, err
 	}
